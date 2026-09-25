@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "SIFT Auto Apply",
+  "version": "0.3.1",
+  "description": "Runs exact-match LinkedIn Easy Apply applications from your SIFT brief.",
+  "permissions": ["storage", "tabs", "alarms", "unlimitedStorage"],
+  "host_permissions": ["https://*.linkedin.com/*"],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_popup": "popup.html", "default_title": "SIFT Auto Apply"},
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://*.linkedin.com/jobs/*"],
+      "js": ["linkedin.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://localhost/*", "http://127.0.0.1/*", "https://*.github.io/*"],
+      "js": ["bridge.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="SIFT, a zero-noise job search agent">
+  <title>SIFT · Signal, not job spam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">S/</div><span>SIFT</span></div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <button class="active" data-view="dashboard"><b>⌂</b><span>Overview</span></button>
+      <button data-view="discover"><b>⌕</b><span>Discover</span></button>
+      <button data-view="pipeline"><b>☷</b><span>Pipeline</span></button>
+      <button data-view="review"><b>✓</b><span>Review queue</span></button>
+      <button data-view="settings"><b>⚙</b><span>Agent setup</span></button>
+    </nav>
+    <div class="safe"><strong>ZERO-NOISE MODE</strong><p>Exact role. Exact city. Nothing outside your brief.</p><span>● Human approval on</span></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><h1 id="pageTitle">Overview</h1><div class="top-actions"><i></i><button class="btn ghost small" onclick="openSetup()">Edit search profile</button><div class="avatar" id="avatar">YOU</div></div></header>
+    <div class="content">
+      <section class="view active" id="dashboardView">
+        <div class="hero hero-main"><div><div class="eyebrow">SIGNAL / 01</div><h2>Less searching.<br><span>More right roles.</span></h2><p class="lead">One role. One city. SIFT removes everything that does not match your exact brief.</p></div><button class="btn primary" onclick="runAgent(this)">Run exact search ↗</button></div>
+        <div class="focus-lock"><span>ACTIVE BRIEF</span><strong id="focusRole">Data Analyst</strong><i>in</i><strong id="focusLocation">Hyderabad</strong><button class="refine" onclick="showView('settings')">Refine</button><button class="auto-apply" onclick="startAutoApply()">Auto Apply ↗</button></div>
+        <div class="stats">
+          <div class="card stat"><div class="stat-top"><span>Matches found</span><em>⌕</em></div><strong id="statMatches">0</strong><small>jobs and hiring posts</small></div>
+          <div class="card stat"><div class="stat-top"><span>Ready to review</span><em>✓</em></div><strong id="statReview">0</strong><small>personalized drafts</small></div>
+          <div class="card stat"><div class="stat-top"><span>Applications</span><em>↗</em></div><strong id="statApplied">0</strong><small>tracked this week</small></div>
+          <div class="card stat"><div class="stat-top"><span>Average match</span><em>◎</em></div><strong id="statScore">—</strong><small>based on your profile</small></div>
+        </div>
+        <div class="grid dash-grid">
+          <div class="grid">
+            <div class="card run-card"><div class="eyebrow">SEARCH BRIEF</div><h3 id="runHeading">Data Analyst in Hyderabad</h3><p id="runDescription">Strict mode rejects every unrelated title and location before it reaches your feed.</p><div class="run-meta"><span>◷ Live LinkedIn</span><span>◎ Exact title</span><span>⌖ Exact city</span></div><button class="btn lime small" onclick="runAgent(this)">Open live search ↗</button></div>
+            <div class="card"><div class="panel-head"><h3>Recent activity</h3><button class="link" onclick="showView('pipeline')">View pipeline</button></div><div class="activity" id="activityList"></div></div>
+          </div>
+          <div class="card goal"><h3>Weekly signal</h3><p>Quality over application volume.</p><div class="ring" id="goalRing"><div><strong id="goalPct">0%</strong><small>of goal</small></div></div><div class="goal-line"><span>Applications</span><strong id="goalApps">0 / 10</strong></div><div class="goal-line"><span>Thoughtful comments</span><strong id="goalComments">0 / 3</strong></div><div class="goal-line"><span>Direct emails</span><strong id="goalEmails">0 / 3</strong></div></div>
+        </div>
+      </section>
+      <section class="view" id="discoverView">
+        <div class="hero"><div><div class="eyebrow">STRICT DISCOVERY</div><h2>Only what fits.</h2><p class="lead" id="discoverLead">Showing only Data Analyst opportunities in Hyderabad. Everything else is removed.</p></div><button class="btn primary" onclick="openLinkedInSearch()">Search LinkedIn ↗</button></div>
+        <div class="searchbar"><input id="searchInput" placeholder="Search title, company, skill, or paste a LinkedIn URL…"><button class="btn green" onclick="handleSearch()">Search opportunities</button></div>
+        <div class="filters"><button class="filter active" data-filter="all">All exact matches</button><button class="filter" data-filter="job">Job listings</button><button class="filter" data-filter="post">Hiring posts</button><span class="strict-badge">STRICT FILTER ON</span></div>
+        <div class="grid discover-grid"><div class="job-list" id="jobList"></div><aside class="card agent"><div class="orb">S/</div><h3>The SIFT rule</h3><p>If the title and city do not match, it never enters your feed.</p><ol><li><b>Find</b><span>Use an exact LinkedIn query.</span></li><li><b>Reject noise</b><span>Block unrelated roles and cities.</span></li><li><b>Shape</b><span>Draft a concise response.</span></li><li><b>You decide</b><span>Approve every external action.</span></li></ol><div class="note">Paste a LinkedIn job or hiring post. SIFT validates it against your brief before adding it.</div><button class="btn ghost wide" onclick="openAdd()">+ Check a job or post</button></aside></div>
+      </section>
+      <section class="view" id="pipelineView">
+        <div class="hero"><div><div class="eyebrow">PIPELINE</div><h2>Every move, visible.</h2><p class="lead">Only qualified opportunities make it here.</p></div><button class="btn ghost" onclick="exportData()">Export CSV ↓</button></div>
+        <div class="card pipeline"><div class="pipe-head"><span>Opportunity</span><span>Type</span><span>Status</span><span>Added</span><span>Action</span></div><div id="pipelineRows"></div></div>
+      </section>
+      <section class="view" id="reviewView">
+        <div class="hero"><div><div class="eyebrow">FINAL CHECK</div><h2>Your voice. Your call.</h2><p class="lead">Edit every draft before it leaves this screen.</p></div></div>
+        <div class="grid review-grid"><div class="card"><div class="panel-head"><h3>Draft queue</h3><span class="tag" id="queueCount">0 items</span></div><div class="queue-list" id="queueList"></div></div><div class="card review" id="reviewDetail"></div></div>
+      </section>
+      <section class="view" id="settingsView">
+        <div class="hero"><div><div class="eyebrow">THE BRIEF</div><h2>Define “right.”</h2><p class="lead">A precise title and city become a hard boundary, not a suggestion.</p></div><button class="btn primary" onclick="saveSettings()">Lock this brief</button></div>
+        <div class="grid settings-grid">
+          <div class="card settings"><h3>Candidate profile</h3><p class="sub">Used for match scoring and personalized drafts.</p><div class="form-row"><label>Full name<input id="setName" placeholder="Your name"></label><label>Email<input id="setEmail" type="email" placeholder="you@example.com"></label></div><label>Professional headline<input id="setHeadline" placeholder="Product designer building thoughtful B2B tools"></label><label>Key skills, comma separated<input id="setSkills" placeholder="Figma, user research, design systems"></label><label>Resume summary or experience<textarea id="setResumeText" rows="8" placeholder="Paste the most relevant parts of your resume…"></textarea></label><div class="resume">📄 <strong id="resumeName">No resume uploaded</strong><span>PDF, DOCX, or TXT · the file stays on this device</span><button class="btn ghost small" onclick="document.getElementById('resumeInput').click()">Choose resume</button><input id="resumeInput" type="file" accept=".pdf,.doc,.docx,.txt" hidden></div></div>
+          <div class="grid"><div class="card settings"><h3>Exact search</h3><p class="sub">SIFT treats these as hard requirements.</p><label>Target roles<div class="role-entry"><input id="settingsRoleInput" placeholder="e.g. Data Analyst"><button class="btn green small" onclick="addSettingsRole()">Add</button></div></label><div class="chips" id="settingsRoles"></div><label>Required city<input id="setLocation" placeholder="Hyderabad"></label><label>Work mode<select id="setMode"><option>Any</option><option>Remote</option><option>Hybrid</option><option>On-site</option></select></label></div><div class="card settings"><h3>Guardrails</h3><p class="sub">Strict matching and review stay on.</p><div class="toggle-line"><div><b>Strict role + city</b><span>Reject everything outside the brief</span></div><button class="toggle on"></button></div><div class="toggle-line"><div><b>Require approval</b><span>Before any external action</span></div><button class="toggle on"></button></div><div class="toggle-line"><div><b>Daily search reminder</b><span>Browser notification access</span></div><button class="toggle" id="reminderToggle"></button></div></div></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="modal-wrap hidden" id="setupModal"><div class="modal"><div class="modal-head"><div><h3>Set the brief</h3><p>One role. One city. Zero noise.</p></div><button onclick="closeModal('setupModal')">×</button></div><div class="modal-body"><div class="steps"><i class="on"></i><i id="bar2"></i><i id="bar3"></i></div><div id="setup1"><div class="dropzone" id="dropzone"><em>📄</em><strong>Add your resume</strong><p>Upload PDF, DOCX, or TXT. The file stays on this device.</p><button class="btn green" onclick="document.getElementById('onboardResume').click()">Choose resume</button><input id="onboardResume" type="file" accept=".pdf,.doc,.docx,.txt" hidden><span id="onboardFile"></span></div></div><div id="setup2" class="hidden"><label>Your name<input id="onboardName" placeholder="How should messages be signed?"></label><label>Exact job title<div class="role-entry"><input id="onboardRoleInput" placeholder="e.g. Data Analyst"><button class="btn green small" onclick="addOnboardRole()">Add</button></div></label><div class="chips" id="onboardRoles"></div><div class="form-row"><label>Required city<input id="onboardLocation" placeholder="Hyderabad"></label><label>Work mode<select id="onboardMode"><option>Any</option><option>Remote</option><option>Hybrid</option><option>On-site</option></select></label></div></div><div id="setup3" class="hidden"><div class="orb">S/</div><h3>Brief locked.</h3><p>SIFT rejects anything outside your exact title and city. It never posts or sends without your action.</p><div class="note"><b>Next:</b> run the exact LinkedIn search and paste strong job or post URLs into Discover.</div></div><div class="modal-foot"><small>🔒 Profile data stays in your browser.</small><div><button class="btn ghost hidden" id="setupBack" onclick="goBack()">Back</button><button class="btn primary" id="setupNext" onclick="goNext()">Start SIFT</button></div></div></div></div></div>
+<div class="modal-wrap hidden" id="addModal"><div class="modal"><div class="modal-head"><div><h3>Check an opportunity</h3><p>SIFT accepts it only when title and city match your brief.</p></div><button onclick="closeModal('addModal')">×</button></div><div class="modal-body"><label>URL<input id="addUrl" placeholder="https://www.linkedin.com/jobs/view/…"></label><div class="form-row"><label>Exact role title<input id="addTitle" placeholder="Data Analyst"></label><label>Company or author<input id="addCompany" placeholder="Company name"></label></div><div class="form-row"><label>Type<select id="addType"><option value="job">Job listing</option><option value="post">Hiring post</option></select></label><label>Contact email, optional<input id="addEmail" type="email" placeholder="hiring@company.com"></label></div><label>Description including city<textarea id="addDescription" rows="5" placeholder="Paste the requirements and location. Hyderabad must be present."></textarea></label><div class="modal-actions"><button class="btn ghost" onclick="closeModal('addModal')">Cancel</button><button class="btn primary" onclick="addOpportunity()">Run strict check</button></div></div></div></div>
+<div class="toast" id="toast"></div><script src="app.js"></script>
+</body></html>
