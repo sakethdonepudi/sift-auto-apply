@@ -1,21 +1,48 @@
 # SIFT
 
-SIFT is a zero-noise, approval-controlled job search workspace. It enforces exact role and city matching before an opportunity can enter the pipeline.
+SIFT is a local-first LinkedIn Easy Apply assistant with precise role/location matching, reusable application answers, visible progress, and safe skips.
 
-Run python3 -m http.server 8080 and open http://localhost:8080.
+![SIFT extension preview](store-listing/screenshot-1280x800.png)
 
-The MVP includes resume selection, keyboard autocomplete for roles and locations, strict profile preferences, focused LinkedIn search links, manual job and post import, match scoring, tailored application/email/comment drafts, a mandatory review queue, CSV export, and browser-local persistence.
+## What is included
 
-LinkedIn does not offer a general public API for automatically applying to arbitrary jobs or commenting on arbitrary posts. Scraping or unattended browser control can trigger account restrictions and create spam. SIFT uses exact user-initiated searches and approval-gated handoffs. A production version should add encrypted backend storage, robust resume extraction, LLM drafting, email OAuth, audit logs, and an approved jobs-data provider.
+- A polished Manifest V3 Chrome extension in `extension/`.
+- Fixed 25-result pagination, persistent job-ID deduplication, and standalone-job recovery.
+- Exact or contains-title matching, excluded title terms, city/country/worldwide/remote location support.
+- PDF resume upload and a reusable custom answer bank.
+- Submission confirmation before an application is counted.
+- Configurable application and scan limits, watchdog recovery, and an immediate Stop control.
+- Chrome Web Store listing copy, disclosures, reviewer instructions, icon, screenshot, and promo tile in `store-listing/`.
+- A public [privacy policy](PRIVACY.md) and upload-ready ZIP package in `dist/`.
 
-## Auto Apply companion
+## Test the extension
 
-The extension directory contains an optional Chrome extension that performs the Easy Apply interaction requested by the user:
+1. Open `chrome://extensions` in Chrome.
+2. Enable **Developer mode** and choose **Load unpacked**.
+3. Select the `extension` directory.
+4. Open SIFT's setup page and save a PDF resume plus truthful application answers.
+5. Stay signed in to LinkedIn and start a small run from the extension popup.
 
-1. Open chrome://extensions.
-2. Enable Developer mode and choose Load unpacked.
-3. Select the extension directory in this project.
-4. Open the extension settings and save a PDF resume and truthful application defaults.
-5. Use Auto Apply in SIFT.
+SIFT runs only after the user presses Start, uses a visible LinkedIn tab, skips unknown required questions, and stops on security checks. It does not ask for LinkedIn credentials or bypass CAPTCHAs.
 
-The companion opens an exact LinkedIn search, selects matching listings, clicks Easy Apply, uploads the resume, fills configured answers, and submits complete forms. It skips unknown required questions and stops on security checks. See extension/README.md for limitations.
+## Build the Chrome Web Store ZIP
+
+```sh
+./scripts/package-extension.sh
+```
+
+The script validates the manifest and JavaScript, includes only extension runtime files, and verifies the resulting archive. Use [store-listing/SUBMISSION-CHECKLIST.md](store-listing/SUBMISSION-CHECKLIST.md) for the dashboard steps.
+
+## Local web workspace
+
+The separate job-search workspace can be previewed with:
+
+```sh
+python3 -m http.server 8080
+```
+
+Then open `http://localhost:8080`. For minimum Chrome permissions, the production extension is controlled from its toolbar popup rather than by injecting a bridge into the website.
+
+## Important limitations
+
+LinkedIn can change its UI or restrict automated activity. SIFT cannot guarantee that every Easy Apply form will work, and users are responsible for truthful answers and compliance with LinkedIn's terms and applicable rules.

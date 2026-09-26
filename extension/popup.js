@@ -1,17 +1,90 @@
-const statusEl=document.getElementById("status"),appliedEl=document.getElementById("applied"),skippedEl=document.getElementById("skipped"),eventsEl=document.getElementById("events"),startEl=document.getElementById("start"),stopEl=document.getElementById("stop"),setupEl=document.getElementById("setup"),roleEl=document.getElementById("quickRole"),locationEl=document.getElementById("quickLocation");
-let initialized=false;
-function installLocationRecommendations(){
-  const codes="AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW".split(" ");
-  const names=new Intl.DisplayNames(["en"],{type:"region"}),countries=codes.map(code=>names.of(code)).filter(Boolean);
-  const hubs=["Remote — Worldwide","New York City","San Francisco Bay Area","Los Angeles","Seattle","Austin","Boston","Chicago","Toronto","Vancouver","Mexico City","São Paulo","Buenos Aires","London","Dublin","Amsterdam","Berlin","Munich","Paris","Madrid","Barcelona","Lisbon","Zurich","Stockholm","Copenhagen","Oslo","Helsinki","Warsaw","Prague","Vienna","Milan","Bengaluru","Hyderabad","Mumbai","Delhi NCR","Pune","Chennai","Kolkata","Ahmedabad","Gurugram","Noida","Singapore","Tokyo","Seoul","Hong Kong","Shanghai","Beijing","Shenzhen","Taipei","Bangkok","Kuala Lumpur","Jakarta","Manila","Ho Chi Minh City","Dubai","Abu Dhabi","Riyadh","Doha","Tel Aviv","Istanbul","Sydney","Melbourne","Brisbane","Auckland","Johannesburg","Cape Town","Nairobi","Lagos","Cairo"];
-  const places=["Worldwide",...countries,...hubs].filter((value,index,array)=>array.indexOf(value)===index);
-  document.getElementById("locationList").innerHTML=places.map(place=>'<option value="'+escapeHtml(place)+'"></option>').join("");
-  const hint=document.createElement("p");hint.className="place-hint";hint.textContent="Worldwide = every location. Or type any country, city, or region.";locationEl.closest("label").appendChild(hint);
+const $ = id => document.getElementById(id);
+const roleEl = $("quickRole");
+const locationEl = $("quickLocation");
+const limitEl = $("quickLimit");
+let initialized = false;
+
+const ROLES = [
+  "Data Analyst", "Senior Data Analyst", "Junior Data Analyst", "Business Data Analyst",
+  "Business Intelligence Analyst", "BI Analyst", "Product Analyst", "Reporting Analyst",
+  "Data Quality Analyst", "Marketing Data Analyst", "Operations Analyst", "Analytics Consultant",
+  "Data Scientist", "Machine Learning Engineer", "Software Engineer", "Frontend Developer",
+  "Backend Developer", "Product Manager", "UX Designer", "Financial Analyst"
+];
+
+function installRecommendations() {
+  $("roleList").innerHTML = ROLES.map(option).join("");
+  const codes = "AD AE AF AG AI AL AM AO AR AS AT AU AZ BA BB BD BE BF BG BH BI BJ BN BO BR BS BT BW BY BZ CA CD CF CG CH CI CL CM CN CO CR CU CV CY CZ DE DJ DK DM DO DZ EC EE EG ER ES ET FI FJ FM FR GA GB GD GE GH GM GN GQ GR GT GW GY HK HN HR HT HU ID IE IL IN IQ IR IS IT JM JO JP KE KG KH KM KN KP KR KW KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MG MH MK ML MM MN MR MT MU MV MW MX MY MZ NA NE NG NI NL NO NP NZ OM PA PE PG PH PK PL PT PY QA RO RS RU RW SA SB SC SD SE SG SI SK SL SM SN SO SR SS ST SV SY SZ TD TG TH TJ TL TM TN TO TR TT TV TW TZ UA UG US UY UZ VA VC VE VN YE ZA ZM ZW".split(" ");
+  const names = new Intl.DisplayNames(["en"], { type: "region" });
+  const hubs = [
+    "Remote — Worldwide", "Bengaluru", "Hyderabad", "Mumbai", "Delhi NCR", "Pune", "Chennai",
+    "Gurugram", "Noida", "New York City", "San Francisco Bay Area", "Los Angeles", "Seattle",
+    "Austin", "Boston", "Chicago", "Toronto", "Vancouver", "Mexico City", "São Paulo", "London",
+    "Dublin", "Amsterdam", "Berlin", "Paris", "Madrid", "Lisbon", "Zurich", "Singapore", "Tokyo",
+    "Seoul", "Hong Kong", "Dubai", "Abu Dhabi", "Sydney", "Melbourne", "Auckland", "Cape Town"
+  ];
+  const values = ["Worldwide", "Remote", ...codes.map(code => names.of(code)).filter(Boolean), ...hubs];
+  $("locationList").innerHTML = [...new Set(values)].map(option).join("");
 }
-function refresh(){chrome.runtime.sendMessage({type:"SIFT_STATUS"},r=>{const s=r?.status||{};if(!initialized){roleEl.value=r?.profile?.role||"Data Analyst";locationEl.value=r?.profile?.location||"Worldwide";initialized=true}statusEl.textContent=s.message||"Ready";appliedEl.textContent=s.applied||0;skippedEl.textContent=s.skipped||0;eventsEl.innerHTML=(s.events||[]).map(e=>'<div><b>'+escapeHtml(e.job||"Job")+'</b><span>'+escapeHtml(e.reason||"")+'</span></div>').join("");startEl.disabled=!!s.active;stopEl.disabled=!s.active})}
-function escapeHtml(value){const div=document.createElement("div");div.textContent=String(value);return div.innerHTML}
-startEl.onclick=async()=>{const saved=await chrome.storage.local.get("profile"),profile={...(saved.profile||{}),role:roleEl.value.trim(),location:locationEl.value.trim()||"Worldwide"};await chrome.storage.local.set({profile});chrome.runtime.sendMessage({type:"SIFT_START"},r=>{if(!r?.ok)statusEl.textContent=r?.error||"Could not start";refresh()})};
-stopEl.onclick=()=>chrome.runtime.sendMessage({type:"SIFT_STOP"},refresh);
-setupEl.onclick=()=>chrome.runtime.openOptionsPage();
-setInterval(refresh,1000);
-installLocationRecommendations();refresh();
+
+function option(value) {
+  const el = document.createElement("option");
+  el.value = value;
+  return el.outerHTML;
+}
+
+function refresh() {
+  chrome.runtime.sendMessage({ type: "SIFT_STATUS" }, response => {
+    const status = response?.status || {};
+    const profile = response?.profile || {};
+    if (!initialized) {
+      roleEl.value = profile.role || "Data Analyst";
+      locationEl.value = profile.location || "Worldwide";
+      limitEl.value = profile.maxApplications || 25;
+      initialized = true;
+    }
+    $("status").textContent = status.message || "Ready when you are";
+    $("phase").textContent = String(status.phase || "ready").toUpperCase();
+    $("phase").className = "phase " + (status.active ? "live" : "");
+    $("scanned").textContent = status.scanned || 0;
+    $("applied").textContent = status.applied || 0;
+    $("skipped").textContent = status.skipped || 0;
+    const limit = Number(status.maxApplications || limitEl.value || 25);
+    $("progressBar").style.width = Math.min(100, ((status.applied || 0) / limit) * 100) + "%";
+    $("events").innerHTML = (status.events || []).map(event =>
+      `<div><i class="${event.kind || "skip"}"></i><p><b>${escapeHtml(event.job || "Job")}</b><span>${escapeHtml(event.reason || "")}</span></p></div>`
+    ).join("") || '<div class="empty-log">Submitted and skipped jobs appear here.</div>';
+    $("start").disabled = Boolean(status.active);
+    $("stop").disabled = !status.active;
+    $("clear").disabled = Boolean(status.active);
+  });
+}
+
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = String(value || "");
+  return div.innerHTML;
+}
+
+$("start").addEventListener("click", async () => {
+  const stored = await chrome.storage.local.get("profile");
+  const profile = {
+    ...(stored.profile || {}),
+    role: roleEl.value.trim(),
+    location: locationEl.value.trim() || "Worldwide",
+    maxApplications: String(Math.max(1, Math.min(100, Number(limitEl.value) || 25)))
+  };
+  await chrome.storage.local.set({ profile });
+  chrome.runtime.sendMessage({ type: "SIFT_START" }, response => {
+    if (!response?.ok) $("status").textContent = response?.error || "Could not start SIFT.";
+    refresh();
+  });
+});
+
+$("stop").addEventListener("click", () => chrome.runtime.sendMessage({ type: "SIFT_STOP" }, refresh));
+$("setup").addEventListener("click", () => chrome.runtime.openOptionsPage());
+$("clear").addEventListener("click", () => chrome.runtime.sendMessage({ type: "SIFT_CLEAR_HISTORY" }, refresh));
+
+installRecommendations();
+refresh();
+setInterval(refresh, 1000);

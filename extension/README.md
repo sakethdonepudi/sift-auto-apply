@@ -1,14 +1,35 @@
-# SIFT Auto Apply companion
+# SIFT — Easy Apply Assistant
 
-## Install once
+SIFT is a Manifest V3 Chrome extension for user-started LinkedIn Easy Apply runs. It searches a chosen role and location, filters visible results, fills supported questions with locally saved answers, uploads a saved PDF resume, and records only confirmed submissions.
 
-1. Open chrome://extensions in Chrome.
-2. Enable Developer mode.
-3. Choose Load unpacked.
-4. Select this extension directory.
-5. Open the SIFT extension, choose Setup resume & answers, and save your PDF resume and application defaults.
-6. Stay signed in to LinkedIn.
+## Install for local testing
 
-Use Start exact run from the extension or Auto Apply from the SIFT web app. The extension searches only the configured exact role and location and only uses LinkedIn Easy Apply.
+1. Open `chrome://extensions` in Chrome.
+2. Enable **Developer mode**.
+3. Choose **Load unpacked**.
+4. Select this `extension` directory.
+5. Pin SIFT, open **Setup resume & answers**, and save a PDF plus truthful answers.
+6. Stay signed in to LinkedIn, open the popup, and press **Start run**.
 
-It skips applications with unknown required questions and stops on security checks. LinkedIn changes its interface regularly, so selectors may require maintenance. Automated activity can violate platform rules or cause account restrictions; use conservative run limits.
+## Reliability and safety behavior
+
+- Search pagination moves in LinkedIn's 25-result batches.
+- Job IDs are remembered so a run does not process the same card twice.
+- Title, excluded terms, and location are checked before Easy Apply opens.
+- A form is counted only after LinkedIn shows a submission confirmation or Applied state.
+- Unsupported required fields cause a safe skip instead of a guessed answer.
+- CAPTCHA, verification, login, and checkpoint pages stop the run.
+- Submission and scan limits are configurable, and **Stop safely** ends the run.
+- Resume and answers stay in local Chrome extension storage; SIFT has no backend.
+
+LinkedIn changes its interface regularly, so selectors require ongoing testing. Automated activity may be limited by LinkedIn and may be governed by its terms. SIFT does not bypass security checks and cannot guarantee support for every employer form.
+
+## Package
+
+From the repository root:
+
+```sh
+./scripts/package-extension.sh
+```
+
+This validates JavaScript and the manifest, packages only the runtime files, verifies the ZIP, and writes `dist/sift-auto-apply-v<version>.zip`.

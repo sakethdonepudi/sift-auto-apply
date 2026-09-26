@@ -22,18 +22,7 @@ function installAutocomplete(){
 }
 function startAutoApply(){
   if(!state.profile.setup){openSetup();return}
-  let acknowledged=false;
-  const receive=event=>{
-    if(event.data?.type==="SIFT_EXTENSION_ACK")acknowledged=true;
-    if(event.data?.type==="SIFT_AUTO_APPLY_RESULT"){
-      window.removeEventListener("message",receive);
-      if(event.data.ok){toast("Auto Apply started in LinkedIn");log("Started Auto Apply run","↗");persist()}
-      else alert(event.data.error);
-    }
-  };
-  window.addEventListener("message",receive);
-  window.postMessage({type:"SIFT_AUTO_APPLY_START",brief:{role:state.profile.roles[0],location:state.profile.location}},"*");
-  setTimeout(()=>{if(!acknowledged){window.removeEventListener("message",receive);alert("SIFT Auto Apply extension is not installed yet. In Chrome, open chrome://extensions, enable Developer mode, choose Load unpacked, and select the extension folder inside this project.")}},900);
+  alert("Open the SIFT extension from Chrome's toolbar, confirm the role and location, then press Start run. The store-ready extension no longer injects code into this website.");
 }
 function log(text,icon="✦"){state.activity.unshift({text,icon,at:new Date().toLocaleDateString(undefined,{month:"short",day:"numeric"})});state.activity=state.activity.slice(0,8)}
 function safeUrl(v){try{const u=new URL(v);return["http:","https:"].includes(u.protocol)?u.href.replace(/'/g,"%27"):"#"}catch(e){return"#"}}

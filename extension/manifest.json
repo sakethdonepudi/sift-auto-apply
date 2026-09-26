@@ -1,22 +1,38 @@
 {
   "manifest_version": 3,
-  "name": "SIFT Auto Apply",
-  "version": "0.3.1",
-  "description": "Runs exact-match LinkedIn Easy Apply applications from your SIFT brief.",
-  "permissions": ["storage", "tabs", "alarms", "unlimitedStorage"],
+  "name": "SIFT — Easy Apply Assistant",
+  "short_name": "SIFT",
+  "version": "1.0.0",
+  "description": "A user-started assistant for matching and completing LinkedIn Easy Apply applications with saved answers.",
+  "permissions": ["storage", "alarms"],
   "host_permissions": ["https://*.linkedin.com/*"],
-  "background": {"service_worker": "background.js"},
-  "action": {"default_popup": "popup.html", "default_title": "SIFT Auto Apply"},
-  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SIFT Easy Apply Assistant",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "content_scripts": [
     {
       "matches": ["https://*.linkedin.com/jobs/*"],
       "js": ["linkedin.js"],
-      "run_at": "document_idle"
-    },
-    {
-      "matches": ["http://localhost/*", "http://127.0.0.1/*", "https://*.github.io/*"],
-      "js": ["bridge.js"],
       "run_at": "document_idle"
     }
   ]

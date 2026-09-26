@@ -1,7 +1,74 @@
-<!doctype html><html><head><meta charset="utf-8"><title>SIFT setup</title><link rel="stylesheet" href="extension.css"></head>
-<body><main><div class="mark">S/</div><p class="overline">SIFT COMPANION</p><h1>One-time setup.</h1><p class="intro">These answers are used only when LinkedIn asks the matching question. Unknown required questions cause the job to be skipped.</p>
-<section><h2>Identity</h2><div class="grid"><label>Full name<input id="name"></label><label>Email<input id="email" type="email"></label><label>Phone<input id="phone"></label><label>LinkedIn URL<input id="linkedinUrl"></label></div></section>
-<section><h2>Search brief</h2><div class="grid"><label>Exact role<input id="role" value="Data Analyst"></label><label>Exact location<input id="location" value="Hyderabad"></label><label>Maximum per run<input id="maxApplications" type="number" min="1" max="25" value="5"></label><label>Years of experience<input id="yearsExperience" type="number" min="0"></label></div></section>
-<section><h2>Application defaults</h2><div class="grid"><label>Work authorized?<select id="workAuthorized"><option value="">Skip if asked</option><option>Yes</option><option>No</option></select></label><label>Need sponsorship?<select id="needsSponsorship"><option value="">Skip if asked</option><option>Yes</option><option>No</option></select></label><label>Expected salary<input id="salary"></label><label>Notice period<input id="noticePeriod"></label></div></section>
-<section><h2>Resume</h2><label class="upload">PDF resume<input id="resume" type="file" accept=".pdf"></label><p id="resumeStatus">No resume saved.</p></section>
-<div class="actions"><button id="save">Save setup</button><span id="message"></span></div></main><script src="options.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SIFT setup</title>
+  <link rel="stylesheet" href="extension.css">
+</head>
+<body class="options">
+  <main>
+    <header class="options-hero">
+      <div class="brand-row"><div class="mark">S/</div><div><p class="overline">PRIVATE, LOCAL SETUP</p><h1>Prepare once.<br>Apply precisely.</h1></div></div>
+      <p>SIFT uses these truthful answers only when a matching LinkedIn Easy Apply form asks for them. Unsupported required questions are skipped, never guessed.</p>
+    </header>
+
+    <form id="setupForm">
+      <section>
+        <div class="section-head"><span>01</span><div><h2>Identity</h2><p>Basic contact details used by application forms.</p></div></div>
+        <div class="grid">
+          <label>Full name<input id="name" autocomplete="name"></label>
+          <label>Email<input id="email" type="email" autocomplete="email"></label>
+          <label>Phone<input id="phone" autocomplete="tel"></label>
+          <label>LinkedIn profile URL<input id="linkedinUrl" type="url" placeholder="https://www.linkedin.com/in/…"></label>
+          <label>Current city<input id="currentCity" autocomplete="address-level2"></label>
+          <label>Country<input id="country" autocomplete="country-name"></label>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>02</span><div><h2>Search guardrails</h2><p>Controls which jobs SIFT will consider and when the run stops.</p></div></div>
+        <div class="grid">
+          <label>Target role<input id="role" value="Data Analyst"></label>
+          <label>Target location<input id="location" value="Worldwide"></label>
+          <label>Title matching<select id="titleMatch"><option value="contains">Contains target role</option><option value="exact">Exact title only</option></select></label>
+          <label>Exclude title words<input id="excludeTerms" placeholder="intern, director, unpaid"></label>
+          <label>Maximum submissions per run<input id="maxApplications" type="number" min="1" max="100" value="25"></label>
+          <label>Maximum jobs scanned per run<input id="maxScanned" type="number" min="25" max="1000" step="25" value="500"></label>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>03</span><div><h2>Common answers</h2><p>SIFT skips the job if a required answer is unavailable.</p></div></div>
+        <div class="grid">
+          <label>Years of experience<input id="yearsExperience" type="number" min="0" step="0.5"></label>
+          <label>Work authorized?<select id="workAuthorized"><option value="">Skip if asked</option><option>Yes</option><option>No</option></select></label>
+          <label>Need sponsorship?<select id="needsSponsorship"><option value="">Skip if asked</option><option>Yes</option><option>No</option></select></label>
+          <label>Expected salary<input id="salary" placeholder="Use the requested currency"></label>
+          <label>Notice period<input id="noticePeriod" placeholder="e.g. 30 days"></label>
+          <label>Portfolio or website<input id="websiteUrl" type="url"></label>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>04</span><div><h2>Answer bank</h2><p>Add exact keywords from recurring questions. First matching rule wins.</p></div></div>
+        <div class="answer-entry">
+          <label>Question contains<input id="answerQuestion" placeholder="e.g. SQL experience"></label>
+          <label>Answer<input id="answerValue" placeholder="e.g. 4"></label>
+          <button type="button" id="addAnswer" class="secondary compact">Add answer</button>
+        </div>
+        <div id="answerList" class="answer-list"></div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>05</span><div><h2>Resume</h2><p>PDF only, up to 5 MB. It stays in Chrome storage on this device.</p></div></div>
+        <label class="upload"><b>Choose PDF resume</b><span id="resumeStatus">No resume saved</span><input id="resume" type="file" accept="application/pdf,.pdf"></label>
+      </section>
+
+      <aside class="privacy-note"><b>Your data stays local.</b><span>SIFT has no server, analytics, ads, or data sale. Removing the extension deletes its locally saved data.</span></aside>
+      <div class="sticky-actions"><span id="message" role="status"></span><button id="save" type="submit" class="primary">Save setup</button></div>
+    </form>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>
