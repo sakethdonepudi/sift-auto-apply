@@ -36,4 +36,4 @@ LinkedIn can change its interface and may limit automated activity. SIFT does no
 - Store icon: `extension/icons/icon-128.png`
 - Screenshot: `store-listing/screenshot-1280x800.png`
 - Small promo tile: `store-listing/promo-440x280.png`
-- Privacy policy: `https://sakethdonepudi.github.io/sift-auto-apply/privacy.html`
+- Privacy policy: `https://github.com/sakethdonepudi/sift-auto-apply/blob/main/PRIVACY.md`

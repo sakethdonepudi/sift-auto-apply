@@ -8,7 +8,7 @@
 - [ ] Upload `screenshot-1280x800.png`.
 - [ ] Upload `promo-440x280.png` as the small promo tile.
 - [ ] Complete the privacy fields using `PRIVACY-DISCLOSURES.md`.
-- [ ] Set the privacy policy URL to `https://sakethdonepudi.github.io/sift-auto-apply/privacy.html` after confirming it is live.
+- [ ] Set the privacy policy URL to `https://github.com/sakethdonepudi/sift-auto-apply/blob/main/PRIVACY.md`.
 - [ ] Add the instructions in `REVIEWER-NOTES.md` to the test instructions field.
 - [ ] Choose public or unlisted distribution and the intended regions.
 - [ ] Test the ZIP as an unpacked extension in a clean Chrome profile.
